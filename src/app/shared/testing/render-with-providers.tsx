@@ -8,7 +8,7 @@ import { type DataRouter, type RouteObject, RouterProvider, createMemoryRouter }
 
 import { queryClient } from '@core/query/query-client';
 
-import { App } from '../../app';
+import { createAppRoot } from '../../app-root-route';
 import { createTestI18n } from './test-i18n';
 
 type RoutesRender = { routes: RouteObject[]; initialEntries: string[] };
@@ -26,7 +26,7 @@ export const renderWithProviders = (ui: ReactElement | RoutesRender): RenderWith
   );
 
   if ('routes' in ui) {
-    const router = createMemoryRouter([{ Component: App, children: ui.routes }], {
+    const router = createMemoryRouter([createAppRoot(ui.routes)], {
       initialEntries: ui.initialEntries,
     });
 

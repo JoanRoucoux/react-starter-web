@@ -8,7 +8,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router';
 import { initI18n } from '@core/i18n/i18n';
 import { queryClient } from '@core/query/query-client';
 
-import { App } from './app/app';
+import { createAppRoot } from './app/app-root-route';
 import { routes } from './app/app-routes';
 import './styles.css';
 
@@ -20,7 +20,7 @@ if (!container) {
 
 await initI18n();
 
-const router = createBrowserRouter([{ Component: App, children: routes }]);
+const router = createBrowserRouter([createAppRoot(routes)]);
 
 createRoot(container).render(
   <StrictMode>
