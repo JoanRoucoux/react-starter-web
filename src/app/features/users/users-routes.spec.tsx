@@ -23,9 +23,11 @@ describe('app routes for users', () => {
   it('renders the list page on /users', async () => {
     allow(['users:read']);
 
+    server.use(http.get('/api/users', () => HttpResponse.json([])));
+
     renderWithProviders({ routes, initialEntries: ['/users'] });
 
-    expect(await screen.findByRole('heading', { name: 'pageTitle.users' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'users:list.title' })).toBeInTheDocument();
   });
 
   it('renders the detail page on /users/42', async () => {
@@ -53,8 +55,10 @@ describe('app routes for users', () => {
       }),
     );
 
+    server.use(http.get('/api/users', () => HttpResponse.json([])));
+
     const { router } = renderWithProviders({ routes, initialEntries: ['/users'] });
-    await screen.findByRole('heading', { name: 'pageTitle.users' });
+    await screen.findByRole('heading', { name: 'users:list.title' });
     await act(() => router!.navigate('/users/42'));
     await screen.findByRole('heading', { name: 'pageTitle.userDetail' });
 
