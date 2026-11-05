@@ -1,0 +1,14 @@
+{
+  "pageTitle": {
+    "home": "Accueil",
+    "users": "Utilisateurs",
+    "userDetail": "Détails de l'utilisateur",
+    "userCreate": "Nouvel utilisateur",
+    "notFound": "Page introuvable"
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "description": "La page demandée n'existe pas.",
+    "home": "Retour à l'accueil"
+  }
+}
