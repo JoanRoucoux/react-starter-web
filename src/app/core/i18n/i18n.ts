@@ -6,6 +6,7 @@ import { initReactI18next } from 'react-i18next';
 import { AVAILABLE_LANGS } from '@core/i18n/available-langs';
 
 const DEFAULT_NAMESPACE = 'translation';
+const COOKIE_MINUTES = 60 * 24 * 30;
 
 const loadPath = (_languages: string[], namespaces: string[]): string =>
   namespaces[0] === DEFAULT_NAMESPACE ? '/i18n/{{lng}}.json' : '/i18n/{{ns}}/{{lng}}.json';
@@ -24,7 +25,12 @@ export const initI18n = async (): Promise<typeof i18n> => {
     .use(initReactI18next)
     .init({
       backend: { loadPath },
-      detection: { order: ['cookie', 'navigator'], caches: ['cookie'], lookupCookie: 'lang' },
+      detection: {
+        order: ['cookie', 'navigator'],
+        caches: ['cookie'],
+        lookupCookie: 'lang',
+        cookieMinutes: COOKIE_MINUTES,
+      },
       supportedLngs: AVAILABLE_LANGS,
       nonExplicitSupportedLngs: true,
       load: 'languageOnly',

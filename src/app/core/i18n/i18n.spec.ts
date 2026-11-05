@@ -53,6 +53,22 @@ describe('initI18n', () => {
     expect(instance.resolvedLanguage).toBe('en');
   });
 
+  it('persists the language in a cookie that expires', async () => {
+    const descriptor = Object.getOwnPropertyDescriptor(Document.prototype, 'cookie');
+    const written: string[] = [];
+    vi.spyOn(document, 'cookie', 'set').mockImplementation((value: string) => {
+      written.push(value);
+      descriptor?.set?.call(document, value);
+    });
+    setBrowserLanguages(['fr-FR']);
+
+    await initFresh();
+
+    const cookie = written.find((value) => value.startsWith('lang=')) ?? '';
+
+    expect(cookie.toLowerCase()).toContain('expires=');
+  });
+
   it('keeps the html lang attribute in sync', async () => {
     setBrowserLanguages(['fr-FR']);
 
