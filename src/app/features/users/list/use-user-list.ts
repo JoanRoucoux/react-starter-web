@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import type { User } from '@core/api-client/reactStarterWebAPI.schemas';
 import { useGetUsers } from '@core/api-client/users/users';
@@ -20,14 +20,10 @@ export function useUserList(): UserList {
   const { data, isLoading, isError, refetch } = useGetUsers();
   const users = data ?? NO_USERS;
 
-  const filteredUsers = useMemo(() => {
-    const term = search.trim().toLowerCase();
-    if (!term) {
-      return users;
-    }
-
-    return users.filter((user) => `${user.firstName} ${user.lastName}`.toLowerCase().includes(term));
-  }, [users, search]);
+  const term = search.trim().toLowerCase();
+  const filteredUsers = term
+    ? users.filter((user) => `${user.firstName} ${user.lastName}`.toLowerCase().includes(term))
+    : users;
 
   return {
     users,

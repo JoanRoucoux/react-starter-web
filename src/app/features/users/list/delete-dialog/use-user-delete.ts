@@ -1,5 +1,6 @@
+import { useQueryClient } from '@tanstack/react-query';
+
 import { getGetUsersQueryKey, useDeleteUser } from '@core/api-client/users/users';
-import { queryClient } from '@core/query/query-client';
 
 type UserDelete = {
   remove(userId: number): Promise<boolean>;
@@ -8,6 +9,7 @@ type UserDelete = {
 };
 
 export function useUserDelete(): UserDelete {
+  const queryClient = useQueryClient();
   const { mutateAsync, isPending, isError } = useDeleteUser();
 
   const remove = async (userId: number): Promise<boolean> => {

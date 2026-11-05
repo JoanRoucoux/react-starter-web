@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import { type UseFormReturn, useForm } from 'react-hook-form';
 
 import type { User, UserCreation } from '@core/api-client/reactStarterWebAPI.schemas';
 import { getGetUsersQueryKey, useCreateUser } from '@core/api-client/users/users';
-import { queryClient } from '@core/query/query-client';
 
 import { initialUserCreation, userCreationSchema } from './user-create-form';
 
@@ -21,6 +21,7 @@ export function useUserCreate(): UserCreate {
     defaultValues: initialUserCreation(),
     mode: 'onTouched',
   });
+  const queryClient = useQueryClient();
   const { mutateAsync } = useCreateUser();
   const [submitError, setSubmitError] = useState(false);
 
