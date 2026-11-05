@@ -24,6 +24,7 @@ export default defineConfig(({ mode }) => ({
   },
   server: {
     port: 4200,
+    watch: { ignored: ['**/playwright-report/**', '**/test-results/**', '**/coverage/**'] },
     proxy: {
       '/api': 'http://localhost:8080',
     },
@@ -32,6 +33,7 @@ export default defineConfig(({ mode }) => ({
     environment: 'jsdom',
     setupFiles: ['src/test-setup.ts'],
     globals: true,
+    include: ['src/**/*.spec.{ts,tsx}'],
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],

@@ -40,6 +40,13 @@ export default defineConfig([
     extends: [sheriff.configs.all],
   },
   {
+    files: ['e2e/fixtures/*.ts'],
+    rules: {
+      'react-hooks/rules-of-hooks': 'off',
+      '@eslint-react/rules-of-hooks': 'off',
+    },
+  },
+  {
     files: ['src/app/core/logger/logger.ts', 'src/main.tsx'],
     rules: {
       'no-console': 'off',
