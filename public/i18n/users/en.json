@@ -1,0 +1,43 @@
+{
+  "list": {
+    "title": "Users",
+    "search": "Search a user…",
+    "loading": "Loading users…",
+    "error": "Unable to load users.",
+    "retry": "Retry",
+    "empty": "No users.",
+    "create": "New user",
+    "delete": "Delete",
+    "deleteUser": "Delete {{name}}",
+    "deleted": "{{name}} has been deleted."
+  },
+  "detail": {
+    "back": "← Back to the list",
+    "loading": "Loading user…",
+    "error": "Unable to load user."
+  },
+  "create": {
+    "title": "New user",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "submit": "Create user",
+    "error": "Unable to create the user.",
+    "errors": {
+      "required": "This field is required.",
+      "email": "Enter a valid email address."
+    }
+  },
+  "delete": {
+    "title": "Delete user",
+    "description": "{{name}} will be permanently deleted. This action cannot be undone.",
+    "cancel": "Cancel",
+    "submit": "Delete",
+    "error": "Unable to delete the user."
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "pending": "Pending"
+  }
+}
