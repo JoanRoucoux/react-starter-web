@@ -120,7 +120,7 @@ src/
 
 Anatomy of a feature: one folder per screen named after its route segment (`list/`, `detail/`, `create/`), plus a `<feature>-routes.tsx` and a `contract/`. A screen folder holds everything that serves only that screen (page, hook, form, dialogs) and **the folder carries the short name while the files carry the full one**: `users/list/user-list-page.tsx`, component `UserListPage`. A single-screen feature keeps its page at the root (`home/home-page.tsx`). The `contract/` folder is the feature's public surface: pure data (route segments, paths, link builders), no component or hook. [app-routes.tsx](src/app/app-routes.tsx) imports a feature's routes file and its contract, nothing else, so a feature moves to another app by moving its folder, and no route path is written as a string outside the feature that owns it.
 
-A page never touches the API client: any I/O lives in a `use-<screen>.ts` hook beside it, see [use-user-list.ts](src/app/features/users/list/use-user-list.ts) and [user-list-page.tsx](src/app/features/users/list/user-list-page.tsx). [AGENTS.md](AGENTS.md) holds the complete set of rules: where each kind of file goes, how state is scoped, and the recipe for adding a screen.
+A page never touches the API client: any I/O lives in a `use-<entity>-<screen>.ts` hook beside it, see [use-user-list.ts](src/app/features/users/list/use-user-list.ts) and [user-list-page.tsx](src/app/features/users/list/user-list-page.tsx). [AGENTS.md](AGENTS.md) holds the complete set of rules: where each kind of file goes, how state is scoped, and the recipe for adding a screen.
 
 Dependency rules, enforced at lint time by [Sheriff](https://sheriff.softarc.io) ([sheriff.config.ts](sheriff.config.ts)): `features` can import `core` and `shared`; `core` can import `shared`; `shared` imports neither `core` nor `features`; features import each other only through `contract/`, `core` may import contracts, and a contract imports nothing from the app; other code shared between features belongs in `core` or `shared`. Modules are barrel-less: import files directly (no `index.ts`), and place files a module wants to keep private in an `internal/` subdirectory.
 
@@ -136,23 +136,31 @@ To bootstrap a real project:
 2. Run `pnpm run generate:api`.
 3. Use the generated hooks in the screen's hook, never in the page. There is no hand-written pass-through layer: the generated client already is the data-access layer, and the tests mock HTTP, not the hooks.
 
+The screen hook owns the data access and the derived state, as in `features/users/list/use-user-list.ts`:
+
 ```tsx
-// features/users/list/use-user-list.ts
 export function useUserList(): UserList {
   const [search, setSearch] = useState('');
   const { data, isLoading, isError, refetch } = useGetUsers();
   const users = data ?? NO_USERS;
 
-  const filteredUsers = useMemo(() => /* ... */, [users, search]);
+  const term = search.trim().toLowerCase();
+  const filteredUsers = term
+    ? users.filter((user) => `${user.firstName} ${user.lastName}`.toLowerCase().includes(term))
+    : users;
 
   return { users, filteredUsers, search, setSearch, isLoading, isError, retry: () => void refetch() };
 }
+```
 
-// features/users/list/user-list-page.tsx
+The page in `features/users/list/user-list-page.tsx` only calls the hook and renders what it returns:
+
+```tsx
 export function UserListPage(): React.JSX.Element {
+  const { t } = useTranslation('users');
   const { filteredUsers, search, setSearch, isLoading, isError, retry } = useUserList();
 
-  return /* ... */;
+  return <h1 className="text-2xl font-semibold tracking-tight">{t('list.title')}</h1>;
 }
 ```
 
@@ -210,7 +218,7 @@ Coverage counts **every** source file, not only the ones a spec imports: `covera
 
 - **On commit**: lint-staged formats and lints the staged files; commitlint enforces [Conventional Commits](https://www.conventionalcommits.org) (`feat: ...`, `fix: ...`, ...).
 - **In CI** ([.github/workflows/ci.yml](.github/workflows/ci.yml)): format check, lint, unit tests, build and e2e on every push/PR, with the required check `ci` as the gate job that waits for all the others (the e2e, `docker` and `ops` jobs included). A separate workflow, [generator-check.yml](.github/workflows/generator-check.yml), scaffolds an app from the working tree and runs its own gates, so the generator manifest and templates cannot drift (maintainer notes in [.generator/README.md](.generator/README.md)).
-- **Code conventions**: function components and hooks, named exports, one `use-<screen>.ts` hook per screen, pages suffixed with `-page`, and the React Compiler doing the memoization. The full list lives in [AGENTS.md](AGENTS.md).
+- **Code conventions**: function components and hooks, named exports, one `use-<entity>-<screen>.ts` hook per screen, pages suffixed with `-page`, and the React Compiler doing the memoization. The full list lives in [AGENTS.md](AGENTS.md).
 - **Config files** use ESM `.mjs` where the tool supports it: [eslint.config.mjs](eslint.config.mjs), [prettier.config.mjs](prettier.config.mjs), [commitlint.config.mjs](commitlint.config.mjs).
 
 ## Contributing

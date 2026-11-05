@@ -60,7 +60,7 @@ Before considering a change done, run the same pipeline as CI: `format:check`, `
 
 ## State and data access
 
-- **A page never imports a runtime value from `@core/api-client/*`** (ESLint, type imports are allowed). Any I/O lives in a `use-<screen>.ts` hook colocated with the screen, and the page interacts with nothing but that hook and local UI state. A screen with local state but no I/O can keep it in the component; a screen with neither (`home-page.tsx`) has no hook at all. This is a layering rule, not a size threshold.
+- **A page never imports a runtime value from `@core/api-client/*`** (ESLint, type imports are allowed). Any I/O lives in a `use-<entity>-<screen>.ts` hook colocated with the screen, and the page interacts with nothing but that hook and local UI state. A screen with local state but no I/O can keep it in the component; a screen with neither (`home-page.tsx`) has no hook at all. This is a layering rule, not a size threshold.
 - **A hook serves exactly one thing that opens and closes**: one screen, or one dialog. State that only means something while a dialog is open belongs to that dialog's hook (`delete-dialog/use-user-delete.ts`), never to the screen's.
 - **The hook owns the route parameters it depends on**, read with `useParams` (see `use-user-detail.ts`). A page therefore has no route prop to forward.
 - **Reads are queries, writes return a result.** Queries are the generated `useGet*` hooks. Commands are `async` functions built on `mutateAsync` that return their outcome (`save()` returns the created user or `undefined`, `remove()` returns a boolean), awaited by the handler that triggered them.
@@ -75,8 +75,8 @@ Before considering a change done, run the same pipeline as CI: `format:check`, `
 - Everything in the repo is written in **English** (code, docs, commit messages).
 - No comments, in code and configuration alike. A trap no test can catch goes in Gotchas below.
 - Commits follow [Conventional Commits](https://www.conventionalcommits.org), enforced by commitlint. lint-staged formats and lints staged files on commit. A pull request title follows the same rules, since the squash merge turns it into the commit on main.
-- Function components and hooks only, named exports, explicit return types (`React.JSX.Element` for components, enforced by ESLint). The React Compiler memoizes: do not add `React.memo` or `useCallback` for performance.
-- Never suffix a module with `-service`: name it after the role it plays (`use-<screen>` for a screen hook, `-repository` for adapted data access). Generated code is the exception, it keeps its generator's naming and is never edited.
+- Function components and hooks only, named exports, explicit return types (`React.JSX.Element` for components, enforced by ESLint). The React Compiler memoizes: do not add `useMemo`, `useCallback` or `React.memo`.
+- Never suffix a module with `-service`: name it after the role it plays (`use-<entity>-<screen>` for a screen hook, `-repository` for adapted data access). Generated code is the exception, it keeps its generator's naming and is never edited.
 - Forms use React Hook Form with `zodResolver`: schema and `initial...()` factory in `<entity>-<screen>-form.ts`, colocated with the page, the form instance created in the screen hook. Factories are functions so each page or dialog instance gets its own object. Every `<form>` carries `noValidate`.
 - `verbatimModuleSyntax` is enabled: type-only imports must use `import type { X }` or `import { type X }`.
 - `console` is forbidden (ESLint) outside `core/logger` and `main.tsx`: use `logger`.
@@ -103,11 +103,12 @@ Before considering a change done, run the same pipeline as CI: `format:check`, `
 
 - TypeScript stays on 6.x (pinned to `6.0.3`, Dependabot ignores `>=7`): `typescript-eslint` does not support TypeScript 7 yet. Do not bump until it does.
 - Orval writes a root `index.ts` into `core/api-client/` that turns it into a barrel Sheriff refuses deep imports from; the `afterAllFilesWrite` hook in `orval.config.ts` deletes it.
-- `pnpm-workspace.yaml` sets `saveExact: true`: `pnpm add` records exact versions, keep it that way. `allowBuilds` lists the dependencies whose install scripts may run (here `esbuild: false`, denied on purpose: Vite 8 does not need it). `minimumReleaseAgeExclude` lists the versions that bypass pnpm's minimum release age.
+- `pnpm-workspace.yaml` sets `saveExact: true`: `pnpm add` records exact versions, keep it that way. `allowBuilds` lists the dependencies whose install scripts may run (here `esbuild: false`, denied on purpose: Vite 8 does not need it). Dependency versions must respect pnpm's minimum release age (one day by default): pin the newest version older than that, and do not exempt a fresh release.
 - The Sheriff config uses `import type { SheriffConfig }`: `verbatimModuleSyntax` rejects a value import of a type.
 - The `@environments/environment` alias comes before `@environments` in the alias array of `vite.config.ts`: Vite takes the first match, and the generic one would swallow the specific one.
 - The React Compiler runs through `@rolldown/plugin-babel` in dev and build, and is skipped when `process.env['VITEST']` is set, so coverage measures the source as written.
-- Vitest `include` is limited to `src/**/*.spec.{ts,tsx}`, or it would pick up the Playwright specs. Vite `server.watch.ignored` keeps `playwright-report`, `test-results` and `coverage` out of the watcher: otherwise the dev server reloads the page when Playwright writes its report.
+- Vitest `include` is limited to `src/**/*.spec.{ts,tsx}`, or it would pick up the Playwright specs. Vite `server.watch.ignored` keeps `playwright-report`, `test-results` and `coverage` out of the watcher. The suspected cause, unconfirmed: a dev server reload when Playwright writes its report makes a cold-start e2e run flaky.
+- `eslint-plugin-jsx-a11y` declares a peer of ESLint below 10, so pnpm prints a peer warning on install; lint works on ESLint 10.
 - ESLint turns the hook rules off in `e2e/fixtures`: Playwright fixtures take a `use` callback that looks like a hook.
 - `prettier --write .` rewrites Markdown too: run `pnpm run format` knowingly.
 - GitHub Actions in `.github/workflows/ci.yml` are pinned by commit SHA with the version in a trailing comment (Dependabot keeps them updated): when adding one, pin it the same way.
