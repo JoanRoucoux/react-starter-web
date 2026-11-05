@@ -60,6 +60,17 @@ describe('UserCreatePage', () => {
     expect(calls.count).toBe(0);
   });
 
+  it('flags only the touched empty field as invalid after tabbing out of it', async () => {
+    const { user } = renderPage();
+
+    await user.click(screen.getByLabelText('users:create.firstName'));
+    await user.tab();
+
+    expect(await screen.findByText('users:create.errors.required')).toBeInTheDocument();
+    expect(screen.getByLabelText('users:create.firstName')).toHaveAttribute('aria-invalid', 'true');
+    expect(screen.getByLabelText('users:create.lastName')).toHaveAttribute('aria-invalid', 'false');
+  });
+
   it('shows the format error message for a malformed email', async () => {
     const calls = trackPosts();
     const { user } = renderPage();
