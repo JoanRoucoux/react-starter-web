@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "starter": "react-starter-web",
+  "nameSuffix": "-web",
+  "prompts": ["feature"],
+  "copyIgnore": [
+    ".git",
+    "node_modules",
+    "dist",
+    "coverage",
+    ".vite",
+    "test-results",
+    "playwright-report",
+    "blob-report",
+    ".claude/settings.local.json",
+    "pnpm-debug.log"
+  ],
+  "remove": [
+    "CHANGELOG.md",
+    ".github/CODE_OF_CONDUCT.md",
+    ".github/CONTRIBUTING.md",
+    ".github/SECURITY.md",
+    "LICENSE",
+    ".github/assets",
+    ".github/ISSUE_TEMPLATE",
+    ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/workflows/release-please.yml",
+    ".github/workflows/dependabot-auto-merge.yml",
+    ".github/workflows/generator-check.yml",
+    "src/app/features/home",
+    "src/app/features/users",
+    "src/app/core/session",
+    "src/app/core/api-client",
+    "public/i18n/home",
+    "public/i18n/users",
+    "e2e"
+  ],
+  "jsonPatch": [
+    {
+      "file": "package.json",
+      "set": {
+        "name": "{{projectName}}",
+        "version": "0.1.0",
+        "description": "{{title}}: React application generated from react-starter-web."
+      },
+      "delete": ["keywords", "homepage", "bugs", "repository", "license", "author"]
+    }
+  ],
+  "replace": [
+    {
+      "file": "index.html",
+      "search": "<title>React Starter Web</title>",
+      "value": "<title>{{titleHtml}}</title>"
+    },
+    {
+      "file": "openapi/openapi.yaml",
+      "search": "react-starter-web API",
+      "value": "{{projectName}} API",
+      "optional": true
+    },
+    {
+      "file": ".dockerignore",
+      "search": ".generator\n",
+      "value": "",
+      "optional": true
+    },
+    {
+      "file": ".prettierignore",
+      "search": "/.generator/templates\n\n",
+      "value": "",
+      "optional": true
+    },
+    {
+      "file": "eslint.config.mjs",
+      "search": ", '.generator'",
+      "value": "",
+      "optional": true
+    },
+    {
+      "file": "src/app/core/not-found-page/not-found-page.tsx",
+      "search": "@features/home/contract/home-paths",
+      "value": "@features/{{feature}}/contract/{{feature}}-paths"
+    },
+    {
+      "file": "src/app/core/not-found-page/not-found-page.tsx",
+      "search": "HOME_PATHS",
+      "value": "{{featureConst}}_PATHS"
+    }
+  ],
+  "replaceAll": [
+    {
+      "extensions": [".ts", ".tsx"],
+      "search": "React Starter Web",
+      "value": "{{titleJs}}"
+    }
+  ],
+  "openapiTarget": "openapi/openapi.yaml",
+  "install": "pnpm install",
+  "postInstall": ["pnpm run format"],
+  "nextSteps": ["pnpm start"]
+}
