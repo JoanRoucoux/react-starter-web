@@ -45,4 +45,21 @@ export default defineConfig([
       'no-console': 'off',
     },
   },
+  {
+    files: ['src/app/**/*-page.tsx', 'src/app/**/*-dialog.tsx'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@core/api-client/*'],
+              allowTypeImports: true,
+              message: 'A page or dialog reads data through its screen hook, never the API client.',
+            },
+          ],
+        },
+      ],
+    },
+  },
 ]);
