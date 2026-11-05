@@ -1,6 +1,5 @@
-import { z } from 'zod';
-
 import type { UserCreation } from '@core/api-client/reactStarterWebAPI.schemas';
+import { z } from '@core/validation/zod';
 
 export const initialUserCreation = (): UserCreation => ({
   firstName: '',

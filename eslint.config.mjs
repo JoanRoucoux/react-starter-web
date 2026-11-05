@@ -53,11 +53,34 @@ export default defineConfig([
     },
   },
   {
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: ['src/app/core/validation/zod.ts'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'zod',
+              message: "Import z from @core/validation/zod, which disables Zod's eval probe for the Trusted Types CSP.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['src/app/**/*-page.tsx', 'src/app/**/*-dialog.tsx'],
     rules: {
       '@typescript-eslint/no-restricted-imports': [
         'error',
         {
+          paths: [
+            {
+              name: 'zod',
+              message: "Import z from @core/validation/zod, which disables Zod's eval probe for the Trusted Types CSP.",
+            },
+          ],
           patterns: [
             {
               group: ['@core/api-client/*'],
