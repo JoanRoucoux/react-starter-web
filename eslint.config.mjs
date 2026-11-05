@@ -7,6 +7,8 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
+const ZOD_MESSAGE = "Import z from @core/validation/zod, which disables Zod's eval probe for the Trusted Types CSP.";
+
 export default defineConfig([
   globalIgnores(['dist', 'coverage', 'src/app/core/api-client', '.generator']),
   {
@@ -59,12 +61,8 @@ export default defineConfig([
       '@typescript-eslint/no-restricted-imports': [
         'error',
         {
-          paths: [
-            {
-              name: 'zod',
-              message: "Import z from @core/validation/zod, which disables Zod's eval probe for the Trusted Types CSP.",
-            },
-          ],
+          paths: [{ name: 'zod', message: ZOD_MESSAGE }],
+          patterns: [{ group: ['zod/*'], message: ZOD_MESSAGE }],
         },
       ],
     },
@@ -78,12 +76,13 @@ export default defineConfig([
           paths: [
             {
               name: 'zod',
-              message: "Import z from @core/validation/zod, which disables Zod's eval probe for the Trusted Types CSP.",
+              message: ZOD_MESSAGE,
             },
           ],
           patterns: [
+            { group: ['zod/*'], message: ZOD_MESSAGE },
             {
-              group: ['@core/api-client/*'],
+              group: ['@core/api-client/*', '**/core/api-client/**'],
               allowTypeImports: true,
               message: 'A page or dialog reads data through its screen hook, never the API client.',
             },
