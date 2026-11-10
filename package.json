@@ -1,6 +1,6 @@
 {
   "name": "react-starter-web",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Ready-to-use React 19 starter with TanStack Query, React Router, i18next, Tailwind CSS, Orval, Vitest, Playwright and Sheriff.",
   "keywords": [
     "react",
