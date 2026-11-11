@@ -2,8 +2,9 @@ import { act, render, screen } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import { RouterProvider, createMemoryRouter } from 'react-router';
 
-import { renderWithProviders } from '@shared/testing/render-with-providers';
 import { createTestI18n } from '@shared/testing/test-i18n';
+
+import { renderWithProviders } from '@testing/render-with-providers';
 
 import { PageTitle } from './page-title';
 

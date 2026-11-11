@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 
-import { renderWithProviders } from '@shared/testing/render-with-providers';
+import { renderWithProviders } from '@testing/render-with-providers';
 
 import { {{featurePascal}}Page } from './{{feature}}-page';
 

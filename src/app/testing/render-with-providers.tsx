@@ -8,8 +8,9 @@ import { type DataRouter, type RouteObject, RouterProvider, createMemoryRouter }
 
 import { queryClient } from '@core/query/query-client';
 
-import { createAppRoot } from '../../app-root-route';
-import { createTestI18n } from './test-i18n';
+import { createTestI18n } from '@shared/testing/test-i18n';
+
+import { createAppRoot } from '../app-root-route';
 
 type RoutesRender = { routes: RouteObject[]; initialEntries: string[] };
 
