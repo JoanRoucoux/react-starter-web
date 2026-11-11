@@ -90,6 +90,7 @@ src/
 |   |   |-- query/             # The shared TanStack QueryClient
 |   |   |-- session/           # What the current user is allowed to do
 |   |   |-- validation/        # The only module allowed to import zod
+|   |   |-- navigation-error-page/ # Reload prompt when a route fails to load
 |   |   `-- not-found-page/    # 404 page
 |   |-- features/              # Business features, grouped by domain
 |   |   |-- home/              # Single-screen feature
