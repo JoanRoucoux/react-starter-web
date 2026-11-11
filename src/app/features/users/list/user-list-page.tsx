@@ -43,7 +43,7 @@ export function UserListPage(): React.JSX.Element {
 
       <input
         aria-label={t('list.search')}
-        className="mb-4 w-full rounded-md border border-(--border) bg-(--card) px-3 py-2 text-sm outline-none focus:border-(--primary)"
+        className="mb-4 w-full rounded-md border border-(--input) bg-(--card) px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--primary)"
         data-testid="user-list-search"
         placeholder={t('list.search')}
         type="search"

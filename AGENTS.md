@@ -100,6 +100,7 @@ Before considering a change done, run the same pipeline as CI: `format:check`, `
 - jsdom implements no `<dialog>` behavior: [src/test-setup.ts](src/test-setup.ts) shims `showModal`/`close` so specs can drive the markup, and the semantics that matter, initial focus on the safe action, Esc, focus returned to the trigger, are asserted in the Playwright suite instead.
 - `coverage.include` in [vite.config.ts](vite.config.ts) makes every source file count, including those no spec imports. `coverage.exclude` holds the generated client and the pure wiring (bootstrap, `*-routes.tsx`, environments, test helpers); anything with behavior gets a spec. The thresholds (85/80/70/85) are intentionally low so downstream users of the starter are not blocked: do not raise them.
 - `data-testid` attributes in markup are used by the Playwright e2e page objects: keep them even where unit tests query by role.
+- The Playwright suite runs twice, as the `chromium` (light) and `chromium-dark` projects, so axe checks both color schemes.
 
 ## Gotchas
 
@@ -131,3 +132,4 @@ Before considering a change done, run the same pipeline as CI: `format:check`, `
 - `showModal()` focuses the first focusable element of the dialog: keep the destructive action second (`user-delete-dialog.tsx`).
 - A merge made with `GITHUB_TOKEN` triggers no `push` workflow, which is why `dependabot-auto-merge.yml` uses the `DEPENDABOT_MERGE_TOKEN` secret when it exists.
 - Generator: `.generator/templates/src/app/app.spec.tsx` mirrors `src/app/app.spec.tsx` and must be kept in sync. The `e2e` folder is removed whole and restored by templates: an e2e helper used by the generated spec needs a template too. Manifest `replace` entries match exact text (for example `HOME_PATHS` in `not-found-page.tsx`): editing those lines breaks the generator check. See [.generator/README.md](.generator/README.md).
+- The token block of `src/styles.css` mirrors the design system starter's `tokens.css`. Dark `--destructive` is a light red so it passes 4.5:1 as text, which is why the dark `--destructive-foreground` is the dark background color. `--input` is the 3:1 border of form controls, `--border` is for decoration only. Never pair `outline-none` with a `focus-visible:outline-*` ring in Tailwind 4: it sets `outline-style: none` and no ring is drawn.
