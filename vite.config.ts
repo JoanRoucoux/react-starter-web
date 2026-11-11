@@ -26,7 +26,10 @@ export default defineConfig(({ mode }) => ({
     port: 4200,
     watch: { ignored: ['**/playwright-report/**', '**/test-results/**', '**/coverage/**'] },
     proxy: {
-      '/api': 'http://localhost:8080',
+      '/api': {
+        target: 'http://localhost:8080',
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
     },
   },
   test: {
