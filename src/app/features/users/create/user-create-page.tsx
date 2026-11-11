@@ -4,7 +4,8 @@ import { Link, useNavigate } from 'react-router';
 import { USERS_PATHS } from '../contract/users-paths';
 import { useUserCreate } from './use-user-create';
 
-const INPUT_CLASS = 'mt-1 block w-full rounded-md border border-(--border) bg-(--background) px-3 py-2 text-sm';
+const INPUT_CLASS =
+  'mt-1 block w-full rounded-md border border-(--input) bg-(--background) px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--primary)';
 
 export function UserCreatePage(): React.JSX.Element {
   const { t } = useTranslation('users');
