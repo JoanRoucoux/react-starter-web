@@ -63,6 +63,35 @@ describe('UserDeleteDialog', () => {
     expect(onDeleted).not.toHaveBeenCalled();
   });
 
+  it('ignores the Escape key while a deletion is pending', async () => {
+    let release = (): void => undefined;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    server.use(
+      http.delete('/api/users/1', async () => {
+        await gate;
+        return new HttpResponse(null, { status: 204 });
+      }),
+    );
+    const { user: actor } = renderDialog();
+
+    await actor.click(screen.getByRole('button', { name: 'users:delete.submit' }));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'users:delete.cancel' })).toBeDisabled());
+
+    const cancelEvent = new Event('cancel', { cancelable: true });
+    fireEvent(screen.getByRole('dialog'), cancelEvent);
+
+    expect(cancelEvent.defaultPrevented).toBe(true);
+    expect(screen.getByRole('dialog')).toHaveAttribute('open');
+    expect(onDismissed).not.toHaveBeenCalled();
+
+    release();
+
+    await waitFor(() => expect(onDeleted).toHaveBeenCalledTimes(1));
+    expect(onDismissed).not.toHaveBeenCalled();
+  });
+
   it('deletes the user and calls onDeleted when confirming', async () => {
     server.use(http.delete('/api/users/1', () => new HttpResponse(null, { status: 204 })));
     const { user: actor } = renderDialog();

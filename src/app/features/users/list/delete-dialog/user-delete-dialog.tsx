@@ -27,6 +27,9 @@ export function UserDeleteDialog({ user, onDeleted, onDismissed }: UserDeleteDia
   }, []);
 
   const dismiss = (): void => {
+    if (deleting) {
+      return;
+    }
     dialogRef.current?.close();
     onDismissed();
   };
