@@ -52,7 +52,7 @@ pnpm install    # installs dependencies and generates the API client (postinstal
 pnpm start      # dev server on http://localhost:4200
 ```
 
-Calls to `/api` are proxied to `http://localhost:8080` by the dev server (`server.proxy` in [vite.config.ts](vite.config.ts)): adjust the target to your backend.
+Calls to `/api` are proxied to `http://localhost:8080` with the `/api` prefix stripped, by the dev server (`server.proxy` in [vite.config.ts](vite.config.ts)): adjust the target to your backend.
 
 ### Scripts
 
