@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 
-import { renderWithProviders } from '@shared/testing/render-with-providers';
+import { renderWithProviders } from '@testing/render-with-providers';
 
 import { HomePage } from './home-page';
 

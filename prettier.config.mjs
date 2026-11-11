@@ -9,6 +9,7 @@ export default {
     '^@core/(.*)$',
     '^@features/(.*)$',
     '^@shared/(.*)$',
+    '^@testing/(.*)$',
     '^@environments/(.*)$',
     '^[./]',
   ],

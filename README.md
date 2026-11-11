@@ -103,8 +103,9 @@ src/
 |   |       |-- create/        # Page + hook + its form schema
 |   |       |-- users-access-guard.ts   # Called by the route loader: redirects when the session says no
 |   |       `-- users-routes.tsx        # Loader, lazy pages, titles; paths come from the contract
-|   `-- shared/                # Reusable code
-|       `-- testing/           # Test utilities (renderWithProviders, MSW server, test i18n)
+|   |-- shared/                # Reusable code
+|   |   `-- testing/           # Test utilities (MSW server, test i18n)
+|   `-- testing/               # Test wiring that needs core and the app root (renderWithProviders)
 |-- environments/              # Per-environment variables (replaced at build time)
 `-- styles.css                 # Global styles: Tailwind import + CSS variables
 ```
@@ -115,7 +116,7 @@ A page never touches the API client: any I/O lives in a `use-<entity>-<screen>.t
 
 Dependency rules, enforced at lint time by [Sheriff](https://sheriff.softarc.io) ([sheriff.config.ts](sheriff.config.ts)): `features` can import `core` and `shared`; `core` can import `shared`; `shared` imports neither `core` nor `features`; features import each other only through `contract/`, `core` may import contracts, and a contract imports nothing from the app; other code shared between features belongs in `core` or `shared`. Modules are barrel-less: import files directly (no `index.ts`), and place files a module wants to keep private in an `internal/` subdirectory.
 
-Available import aliases: `@core/*`, `@features/*`, `@shared/*`, `@environments/*`.
+Available import aliases: `@core/*`, `@features/*`, `@shared/*`, `@testing/*`, `@environments/*`.
 
 ## Talking to the backend
 
@@ -199,7 +200,7 @@ The nginx config does the two things a single-page app needs: unmatched paths fa
 
 ## Testing
 
-Component tests use [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) (`render`, `screen`, `userEvent`) through `renderWithProviders` ([render-with-providers.tsx](src/app/shared/testing/render-with-providers.tsx)): querying by role or label asserts accessibility for free and matches the Playwright `getByRole` style used in e2e. HTTP is mocked with [MSW](https://mswjs.io) ([msw-server.ts](src/app/shared/testing/msw-server.ts)), and an unhandled request fails the test. Screen hooks, the fetch layer and form schemas are tested without rendering a page. The [jest-dom](https://github.com/testing-library/jest-dom) matchers (`toBeInTheDocument`, `toBeEnabled`, ...) are registered in [src/test-setup.ts](src/test-setup.ts).
+Component tests use [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) (`render`, `screen`, `userEvent`) through `renderWithProviders` ([render-with-providers.tsx](src/app/testing/render-with-providers.tsx)): querying by role or label asserts accessibility for free and matches the Playwright `getByRole` style used in e2e. HTTP is mocked with [MSW](https://mswjs.io) ([msw-server.ts](src/app/shared/testing/msw-server.ts)), and an unhandled request fails the test. Screen hooks, the fetch layer and form schemas are tested without rendering a page. The [jest-dom](https://github.com/testing-library/jest-dom) matchers (`toBeInTheDocument`, `toBeEnabled`, ...) are registered in [src/test-setup.ts](src/test-setup.ts).
 
 E2e tests live in `e2e/` (`pages/` for page objects, `fixtures/` for custom test fixtures), next to the app rather than in a separate package. They also run [axe](https://github.com/dequelabs/axe-core-npm) on the rendered page through `expectNoAccessibilityViolations`, which fails on any WCAG 2.1 A/AA violation (call it again once a dialog is open, since axe only sees what is currently rendered).
 

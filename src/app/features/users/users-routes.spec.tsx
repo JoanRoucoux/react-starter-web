@@ -2,7 +2,8 @@ import { act, screen } from '@testing-library/react';
 import { HttpResponse, http } from 'msw';
 
 import { server } from '@shared/testing/msw-server';
-import { renderWithProviders } from '@shared/testing/render-with-providers';
+
+import { renderWithProviders } from '@testing/render-with-providers';
 
 import { routes } from '../../app-routes';
 

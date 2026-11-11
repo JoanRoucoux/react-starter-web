@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => ({
       { find: '@core', replacement: resolveSrc('./src/app/core') },
       { find: '@features', replacement: resolveSrc('./src/app/features') },
       { find: '@shared', replacement: resolveSrc('./src/app/shared') },
+      { find: '@testing', replacement: resolveSrc('./src/app/testing') },
       {
         find: '@environments/environment',
         replacement: resolveSrc(
@@ -48,6 +49,7 @@ export default defineConfig(({ mode }) => ({
         'src/**/*.spec.{ts,tsx}',
         'src/test-setup.ts',
         'src/app/shared/testing/**',
+        'src/app/testing/**',
       ],
       reporter: ['text-summary', 'html', 'lcovonly'],
       thresholds: { statements: 85, branches: 80, functions: 70, lines: 85 },

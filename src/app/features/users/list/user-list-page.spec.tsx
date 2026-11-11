@@ -5,7 +5,8 @@ import { MemoryRouter } from 'react-router';
 import type { User } from '@core/api-client/reactStarterWebAPI.schemas';
 
 import { server } from '@shared/testing/msw-server';
-import { renderWithProviders } from '@shared/testing/render-with-providers';
+
+import { renderWithProviders } from '@testing/render-with-providers';
 
 import { UserListPage } from './user-list-page';
 

@@ -29,7 +29,8 @@ Before considering a change done, run the same pipeline as CI: `format:check`, `
 - **`<feature>-routes.tsx` is the feature's routing entry point**: every feature has one, whatever its number of screens, and it owns the feature's titles (`handle.title`), loaders and lazy pages. Its paths come from the feature's contract (`contract/<feature>-paths.ts`), never from string literals. `app-routes.tsx` imports a feature's routes file and its contract, nothing else: it never reaches for a page directly. A feature is then relocatable (to another app, to another MFE) by moving its folder and changing those imports.
 - `src/app/shared/`: reusable presentation/test helpers, imports neither `core` nor `features`.
 - Module boundaries are enforced at lint time by Sheriff ([sheriff.config.ts](sheriff.config.ts)): `features` -> `core`/`shared`; `core` -> `shared`; features import each other only through `contract/`; `core` may import contracts; contracts import nothing from the app. Modules are barrel-less: no `index.ts`, import files directly; private files go in an `internal/` subdirectory.
-- Import aliases: `@core/*`, `@features/*`, `@shared/*`, `@environments/*`.
+- Sheriff only follows imports reachable from `src/main.tsx`, so specs and test helpers are outside its graph and a boundary crossed there is not reported: review their imports by hand, they follow the same rules. `src/app/testing/` holds the test wiring that needs `core` and the app root (`renderWithProviders`).
+- Import aliases: `@core/*`, `@features/*`, `@shared/*`, `@testing/*`, `@environments/*`.
 
 ## Feature contract
 
@@ -92,7 +93,7 @@ Before considering a change done, run the same pipeline as CI: `format:check`, `
 
 ## Testing
 
-- Component tests use React Testing Library through `renderWithProviders` (`shared/testing`): query by role or label, not by CSS selectors. Screen hooks use `renderHook`. jest-dom matchers and the `<dialog>` shim are set up in `src/test-setup.ts`.
+- Component tests use React Testing Library through `renderWithProviders` (`src/app/testing`, `@testing/render-with-providers`): query by role or label, not by CSS selectors. Screen hooks use `renderHook`. jest-dom matchers and the `<dialog>` shim are set up in `src/test-setup.ts`.
 - HTTP is mocked with MSW 3 (`shared/testing/msw-server.ts`), started with `onUnhandledFrame: 'error'` (not `onUnhandledRequest`): a route test that renders `/users` must register a handler.
 - Test i18n (`shared/testing/test-i18n.ts`) has no resources: a missing key renders as the key (default namespace) or `ns:key`.
 - jsdom implements no `<dialog>` behavior: [src/test-setup.ts](src/test-setup.ts) shims `showModal`/`close` so specs can drive the markup, and the semantics that matter, initial focus on the safe action, Esc, focus returned to the trigger, are asserted in the Playwright suite instead.

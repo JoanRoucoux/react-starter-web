@@ -5,7 +5,8 @@ import { type MockInstance } from 'vitest';
 import type { User } from '@core/api-client/reactStarterWebAPI.schemas';
 
 import { server } from '@shared/testing/msw-server';
-import { renderWithProviders } from '@shared/testing/render-with-providers';
+
+import { renderWithProviders } from '@testing/render-with-providers';
 
 import { UserDeleteDialog } from './user-delete-dialog';
 
