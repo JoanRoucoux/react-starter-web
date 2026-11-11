@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 
 import { logger } from '@core/logger/logger';
 
@@ -36,7 +36,7 @@ describe('NavigationErrorPage', () => {
 
     expect(await screen.findByRole('heading', { name: 'navigationError.title' })).toBeInTheDocument();
     expect(screen.getByText('navigationError.description')).toBeInTheDocument();
-    expect(logger.error).toHaveBeenCalledWith('NavigationErrorPage', failure);
+    await waitFor(() => expect(logger.error).toHaveBeenCalledWith('NavigationErrorPage', failure));
   });
 
   it('reloads the page on demand', async () => {

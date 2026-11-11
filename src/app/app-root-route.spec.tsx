@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 
 import { logger } from '@core/logger/logger';
 
@@ -27,6 +27,6 @@ describe('createAppRoot', () => {
     const heading = await screen.findByRole('heading', { name: 'navigationError.title' });
 
     expect(within(screen.getByRole('main')).getByRole('heading', { name: 'navigationError.title' })).toBe(heading);
-    expect(logger.error).toHaveBeenCalledWith('NavigationErrorPage', failure);
+    await waitFor(() => expect(logger.error).toHaveBeenCalledWith('NavigationErrorPage', failure));
   });
 });
