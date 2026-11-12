@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/JoanRoucoux/react-starter-web/compare/v1.1.0...v1.1.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* run nginx as an unprivileged user ([#13](https://github.com/JoanRoucoux/react-starter-web/issues/13)) ([10d6ba4](https://github.com/JoanRoucoux/react-starter-web/commit/10d6ba4049bcd75e0f1ad4f75ee0abaf74c1be6f))
+
 ## [1.1.0](https://github.com/JoanRoucoux/react-starter-web/compare/v1.0.0...v1.1.0) (2026-11-11)
 
 
