@@ -3,8 +3,11 @@ import { logger } from '@core/logger/logger';
 
 import { environment } from '@environments/environment';
 
+const TRACE_ID_HEADER = 'X-Trace-Id';
+
 const fail = (error: ApiError): never => {
-  logger.error('apiFetch', `API error on ${error.method} ${error.url}`, error);
+  const trace = error.traceId ? ` (trace ${error.traceId})` : '';
+  logger.error('apiFetch', `API error on ${error.method} ${error.url}${trace}`, error);
   throw error;
 };
 
@@ -28,8 +31,11 @@ export const apiFetch = async <T>(url: string, options: RequestInit): Promise<T>
     return fail(new ApiError((cause as Error).message, 0, method, url));
   }
 
+  const traceId = response.headers.get(TRACE_ID_HEADER);
   if (!response.ok) {
-    return fail(new ApiError(`${response.status} ${response.statusText}`.trim(), response.status, method, url));
+    return fail(
+      new ApiError(`${response.status} ${response.statusText}`.trim(), response.status, method, url, traceId),
+    );
   }
 
   const text = await response.text();
@@ -39,6 +45,6 @@ export const apiFetch = async <T>(url: string, options: RequestInit): Promise<T>
   try {
     return JSON.parse(text) as T;
   } catch {
-    return fail(new ApiError('Invalid JSON response', response.status, method, url));
+    return fail(new ApiError('Invalid JSON response', response.status, method, url, traceId));
   }
 };

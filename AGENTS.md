@@ -125,7 +125,7 @@ Before considering a change done, run the same pipeline as CI: `format:check`, `
 - The runtime image is `nginx-unprivileged`: nginx listens on 8080 because an unprivileged user cannot bind 80. The `docker` job fails if the container runs as uid 0.
 - The required status check `ci` is the gate job at the end of `ci.yml`, not a build job: a new CI job must be added to its `needs`, or its failure will not block a merge. It runs `if: always()`, never `!cancelled()`: a cancelled run must turn the gate red.
 - Dependabot never bumps the Node major in the Dockerfile (it ignores semver-major for the `node` image): the Node major lives in `.nvmrc`, `engines` in package.json, the Dockerfile and the CI `node-version`, changed together by hand.
-- `apiFetch` only logs. Showing a failure is the job of the screen that asked (each hook exposes `isError` or `error`), because a toaster raised from the fetch layer would duplicate or replace that message.
+- `apiFetch` only logs, with the `X-Trace-Id` the API answers every request with (kept on `ApiError.traceId`), which matches the `traceId` of the backend log lines. Showing a failure is the job of the screen that asked (each hook exposes `isError` or `error`), because a toaster raised from the fetch layer would duplicate or replace that message.
 - `initI18n()` is awaited before the first render in `main.tsx`: without it the first paint shows keys instead of text.
 - The detected language can be regional (`fr-FR`): `<html lang>` and `useActiveLang` reduce it with `Intl.Locale(...).language`.
 - Loading a namespace also fetches the fallback language file: an MSW spec that loads real i18n must handle both `en` and `fr`.

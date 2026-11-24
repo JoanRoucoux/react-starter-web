@@ -57,6 +57,19 @@ describe('apiFetch', () => {
     expect(spy).toHaveBeenCalledWith('apiFetch', expect.stringContaining('GET /users'), error);
   });
 
+  it('carries and logs the trace id the API answered with', async () => {
+    const spy = vi.spyOn(logger, 'error').mockImplementation(() => undefined);
+    const traceId = '4bf92f3577b34da6a3ce929d0e0e4736';
+    server.use(
+      http.get('/api/users', () => new HttpResponse(null, { status: 502, headers: { 'X-Trace-Id': traceId } })),
+    );
+
+    const error = await apiFetch('/users', { method: 'GET' }).catch((e: unknown) => e);
+
+    expect(error).toMatchObject({ status: 502, traceId });
+    expect(spy).toHaveBeenCalledWith('apiFetch', `API error on GET /users (trace ${traceId})`, error);
+  });
+
   it('throws an ApiError with status 0 on a network error', async () => {
     const spy = vi.spyOn(logger, 'error').mockImplementation(() => undefined);
     server.use(http.get('/api/users', () => HttpResponse.error()));
