@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/JoanRoucoux/react-starter-web/compare/v1.1.1...v1.2.0) (2026-11-24)
+
+
+### Features
+
+* log the API trace id with a failed call ([#16](https://github.com/JoanRoucoux/react-starter-web/issues/16)) ([f155952](https://github.com/JoanRoucoux/react-starter-web/commit/f1559529ce1a3728ddedb9eef94a14318712f2d9))
+
 ## [1.1.1](https://github.com/JoanRoucoux/react-starter-web/compare/v1.1.0...v1.1.1) (2026-11-12)
 
 
